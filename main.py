@@ -2,7 +2,8 @@ import sys
 import time
 
 import pandas as pd
-import pandas_profiling
+
+from src.CollaborativeRecommender.CollaborativeRecommender import CollaborativeRecommender
 
 def main():
     startTime = time.time()
@@ -16,9 +17,16 @@ def main():
     with open(sys.argv[3], 'r') as f:
         targets = pd.read_csv(f, sep=',', engine='python')
 
-    profile = pandas_profiling.ProfileReport(content)
-    profile.to_file('./results/profiler_raw_data.html')
-    
+
+    ## Collaborative Recommender
+    training = ratings.sample(frac=0.8, random_state=8)
+    validation = ratings.drop(training.index.tolist())
+
+    recommender = CollaborativeRecommender()
+
+    # Caso seja necessário apenas printar na tela os valores ou gerar um arquivo, modifique os parametros saveToFile e printOnConsole
+    recommender.runRecommender(training, validation, targets, startTime, saveToFile=True, printOnConsole=False)
+        
     print("Time: %s seconds " % (time.time() - startTime))
 
 main()
