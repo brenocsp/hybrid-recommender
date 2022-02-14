@@ -35,8 +35,8 @@ class CollaborativeRecommender:
         self.nEpochs = nEpochs
         self.nFactors = nFactors
         self.stopThreshold = stopThreshold
-        self.minRating = 1
-        self.maxRating = 5
+        self.minRating = 0
+        self.maxRating = 10
 
     def _initBias(self, dataFrame):
         """ Esse método inicializa o vetor de bias de itens e de usuários. 
@@ -350,9 +350,9 @@ class CollaborativeRecommender:
 
         if saveToFile:
             predictions = pd.DataFrame(self.predictions_, columns=['UserId', 'ItemId', 'Predictions'])
-            predictions = predictions.sort_values(by=['Predictions'], ascending=False)
-            predictions = predictions.sort_values(by=['UserId'], ascending=True)
-            submissionFile = predictions[['UserId', 'ItemId']]
+            predictions = predictions.sort_values(['UserId','Predictions'], ascending=[True, False])
+
+            submissionFile = predictions[['UserId','ItemId','Predictions']]
             submissionFile.to_csv('submission.csv', index=False, sep=',')
         
         if printOnConsole:

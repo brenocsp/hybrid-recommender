@@ -9,7 +9,8 @@ def main():
     startTime = time.time()
 
     with open(sys.argv[1], 'r') as f:
-        ratings = pd.read_json(f, lines=True)
+        ratings1 = pd.read_json(f, lines=True)
+        ratings = ratings1[['UserId', 'ItemId', 'Rating']]
 
     with open(sys.argv[2], 'r') as f:
         content = pd.read_json(f, lines=True)

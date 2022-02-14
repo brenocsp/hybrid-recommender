@@ -1,5 +1,5 @@
 
-class HybridRecommender:
+class ContentRecommender:
     def __init__(self):
         """ Esse classe implementa um recomendador colaborativo ....
 
