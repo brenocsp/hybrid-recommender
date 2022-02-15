@@ -352,7 +352,7 @@ class CollaborativeRecommender:
             predictions = pd.DataFrame(self.predictions_, columns=['UserId', 'ItemId', 'Predictions'])
             predictions = predictions.sort_values(['UserId','Predictions'], ascending=[True, False])
 
-            submissionFile = predictions[['UserId','ItemId','Predictions']]
+            submissionFile = predictions[['UserId','ItemId']]
             submissionFile.to_csv('submission.csv', index=False, sep=',')
         
         if printOnConsole:
