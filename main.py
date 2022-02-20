@@ -4,6 +4,8 @@ import time
 import pandas as pd
 
 from src.CollaborativeRecommender.CollaborativeRecommender import CollaborativeRecommender
+from src.ContentRecommender.ContentRecommender import ContentRecommender
+from src.HybridRecommender.HybridRecommender import HybridRecommender
 
 def main():
     startTime = time.time()
@@ -18,14 +20,19 @@ def main():
         targets = pd.read_csv(f, sep=',', engine='python')
 
 
-    ## Collaborative Recommender
+    ## Collaborative Filtering Recommender
     training = ratings[['UserId', 'ItemId', 'Rating']].sample(frac=0.8, random_state=8)
     validation = ratings.drop(training.index.tolist())
+    cfReccomendations = CollaborativeRecommender()
+    cfReccomendations = cfReccomendations.getPredictions(training, validation, targets, saveToFile=False, printOnConsole=False, getPredictions=True)
 
-    recommender = CollaborativeRecommender()
+    ## Content Based Recommender
+    cbReccomendations = ContentRecommender()
+    cbReccomendations = cbReccomendations.getPredictions(ratings, content, targets)
 
-    # Caso seja necessário apenas printar na tela os valores ou gerar um arquivo, modifique os parametros saveToFile e printOnConsole
-    recommender.runRecommender(training, validation, targets, startTime, saveToFile=True, printOnConsole=False)
+    ## Hybrid Recommender
+    hybridReccomendations = HybridRecommender()
+    hybridReccomendations = hybridReccomendations.getPredictions(cfReccomendations, cbReccomendations, saveToFile=True, printOnConsole=False)
         
     print("Time: %s seconds " % (time.time() - startTime))
 

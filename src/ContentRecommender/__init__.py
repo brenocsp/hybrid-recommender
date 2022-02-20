@@ -1,1 +1,1 @@
-from .HybridRecommender import HybridRecommender
+from .ContentRecommender import ContentRecommender

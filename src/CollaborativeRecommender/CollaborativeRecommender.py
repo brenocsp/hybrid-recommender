@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import pandas as pd
 
@@ -173,9 +171,6 @@ class CollaborativeRecommender:
 
                     pu[user, factor] += self.learningRate * (error * itemFactor - self.regularizationFactor * userFactor)
                     qi[item, factor] += self.learningRate * (error * userFactor - self.regularizationFactor * itemFactor)
-
-            if (time.time() - self.startTime_) > 240: # O aprendizado não pode passar de 4 minutos por segurança
-                break
                 
             if self._checkIfPredictionsAreImproving(bu, bi, pu, qi, epoch) == False:
                 break
@@ -287,7 +282,7 @@ class CollaborativeRecommender:
 
             self.predictions_.append([user, item, prediction])
 
-    def runRecommender(self, training, validation, targets, startTime, saveToFile=True, printOnConsole=True):
+    def getPredictions(self, training, validation, targets, saveToFile=True, printOnConsole=True, getPredictions=True):
         """ Esse método propriamente invoca os outros métodos da classe para processar os dados de
             entrada e devidamente gerar as recomendações de itens em forma de arquivo ou na saída
             padrão.
@@ -309,8 +304,6 @@ class CollaborativeRecommender:
 
         Attributes:
         -----------
-            startTime_ (float): Define o tempo de execução do programa
-
             userMapping_ (dict): Dicionário para os ids e o index de int para os usuários
 
             itemMapping_ (dict): Dicionário para os ids e o index de int para os itens
@@ -331,7 +324,6 @@ class CollaborativeRecommender:
             identificar se as predições não estão melhorando significamente mais
 
         """
-        self.startTime_ = startTime
 
         self.userMapping_ = self._initDataSetMapping(training, columnName='UserId')
         self.itemMapping_ = self._initDataSetMapping(training, columnName='ItemId')
@@ -349,13 +341,18 @@ class CollaborativeRecommender:
         self._makePredictions()
 
         if saveToFile:
-            predictions = pd.DataFrame(self.predictions_, columns=['UserId', 'ItemId', 'Predictions'])
-            predictions = predictions.sort_values(['UserId','Predictions'], ascending=[True, False])
+            self.predictions_ = pd.DataFrame(self.predictions_, columns=['UserId', 'ItemId', 'Predictions'])
+            self.predictions_ = self.predictions_.sort_values(['UserId','Predictions'], ascending=[True, False])
 
-            submissionFile = predictions[['UserId','ItemId']]
+            submissionFile = self.predictions_[['UserId','ItemId', 'Predictions']]
             submissionFile.to_csv('submission.csv', index=False, sep=',')
         
         if printOnConsole:
             print('UserId','ItemId')
             for user, item in self.predictions_:
                 print(user, item, sep=',')
+
+        if getPredictions:
+            self.predictions_ = pd.DataFrame(self.predictions_, columns=['UserId', 'ItemId', 'Predictions'])
+            self.predictions_ = self.predictions_.sort_values(['UserId','Predictions'], ascending=[True, False])
+            return self.predictions_
