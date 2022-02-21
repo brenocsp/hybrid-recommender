@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 class CollaborativeRecommender:
-    def __init__(self, learningRate=0.01, regularizationFactor=0.05, nEpochs=50, nFactors=25, stopThreshold=0.000001):
+    def __init__(self, learningRate=0.01, regularizationFactor=0.05, nEpochs=50, nFactors=25, stopThreshold=0.00001):
         """ Esse classe implementa um recomendador colaborativo baseado no modelo de fator latente utilizando da ideia
             da decomposição em valores singulares (SVD). Os valores pré-definidos na chamada da função representam
             a melhor configuração encontrada após testes.

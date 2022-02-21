@@ -38,14 +38,17 @@ class HybridRecommender:
         self._ajustCollaborativeData()
 
         self.reccomendations_ = pd.merge(self.cfPredictions_ , self.cbPredictions_, on=['UserId', 'ItemId'])
-        self.reccomendations_ = self.reccomendations_.sort_values(['UserId','Similarity','imdbVotes','BoxOffice','Metascore','imdbRating','PredictionGrade'], ascending=[True, False,False, False, False, False, False])
-        self.reccomendations_ = self.reccomendations_[['UserId', 'ItemId']]
+        self.reccomendations_['Similarity'] = self.reccomendations_['Similarity']*self.reccomendations_['imdbVotes']
+        self.reccomendations_ = self.reccomendations_.sort_values(['UserId','Similarity','imdbVotes','BoxOffice','Metascore','imdbRating','PredictionGrade'], ascending=[True, False, False, False, False, False, False])
+        output = self.reccomendations_[['UserId', 'ItemId']].copy()
 
         if saveToFile:
-            self.reccomendations_.to_csv('submission.csv', index=False, sep=',')
+            output.to_csv('submission.csv', index=False, sep=',')
         
         if printOnConsole:
-            print('UserId','ItemId')
-            for user, item in self.reccomendations_:
+            pd.set_option("display.max_rows", None, "display.max_columns", None)
+            output = output.to_numpy()
+            print('UserId,','ItemId')
+            for user, item in output:
                 print(user, item, sep=',')
 

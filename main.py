@@ -1,6 +1,4 @@
 import sys
-import time
-
 import pandas as pd
 
 from src.CollaborativeRecommender.CollaborativeRecommender import CollaborativeRecommender
@@ -8,7 +6,6 @@ from src.ContentRecommender.ContentRecommender import ContentRecommender
 from src.HybridRecommender.HybridRecommender import HybridRecommender
 
 def main():
-    startTime = time.time()
 
     with open(sys.argv[1], 'r') as f:
         ratings = pd.read_json(f, lines=True)
@@ -32,8 +29,6 @@ def main():
 
     ## Hybrid Recommender
     hybridReccomendations = HybridRecommender()
-    hybridReccomendations = hybridReccomendations.getPredictions(cfReccomendations, cbReccomendations, saveToFile=True, printOnConsole=False)
-        
-    print("Time: %s seconds " % (time.time() - startTime))
+    hybridReccomendations = hybridReccomendations.getPredictions(cfReccomendations, cbReccomendations, saveToFile=False, printOnConsole=True)
 
 main()
